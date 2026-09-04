@@ -25,8 +25,30 @@ jobs:
           python-version: "3.12"
           cache: pip
 
+      - name: Preflight - confirm the checkout actually contains what we need
+        run: |
+          echo "=== repository root as GitHub checked it out ==="
+          ls -la
+          echo
+          missing=0
+          for f in collect_technicals.py requirements.txt; do
+            if [ -f "$f" ]; then
+              echo "  found    $f"
+            else
+              echo "::error::missing required file at repo root: $f"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo
+            echo "The listing above is exactly what is in the repo. If a file is in a"
+            echo "subfolder, or named 'collect_technicals (1).py', move or rename it."
+            exit 1
+          fi
+          python -c "import ast; ast.parse(open('collect_technicals.py').read()); print('  collect_technicals.py parses OK')"
+
       - name: Install dependencies
-        run: pip install requests
+        run: pip install -r requirements.txt
 
       - name: Collect technicals
         run: python collect_technicals.py --out technicals.json
