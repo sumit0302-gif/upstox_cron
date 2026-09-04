@@ -1,0 +1,6 @@
+# Dependencies for collect_technicals.py — this is all the GitHub Action needs.
+requests>=2.32.0
+
+# To run NSE_Positional_Technicals.ipynb locally, also install:
+#   pip install pandas matplotlib jupyter
+# They are deliberately left out here so the daily Action stays fast.
